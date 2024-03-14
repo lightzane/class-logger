@@ -2,15 +2,22 @@
   "name": "class-logger",
   "version": "1.0.0",
   "description": "Implement (winston) loggers via Typescript Decorators.",
+  "main": "dist/index.js",
   "engines": {
     "node": ">=20",
     "npm": ">=10"
   },
+  "files": [
+    "decorators/",
+    "index.js",
+    "index.d.ts"
+  ],
   "scripts": {
-    "start": "node dist",
+    "start": "node dist/example",
     "build": "node scripts/clean.mjs && tsc",
-    "dev": "nodemon src/index.ts --watch src --ext ts,graphql",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon src/example.ts --watch src --ext ts,graphql",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "pack": "node scripts/clean.mjs && tsc --outDir . && npm pack && node scripts/clean.mjs"
   },
   "license": "ISC",
   "devDependencies": {

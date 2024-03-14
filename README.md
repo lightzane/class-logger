@@ -18,6 +18,7 @@ Implement ([winston][w]) logger via **Typescript Decorators**.
   - [Custom format](#custom-format)
   - [Reuse Logger](#reuse-logger)
 - [Environment Variables](#environment-variables)
+- [Publishing](#publishing)
 
 ## Getting Started
 
@@ -38,7 +39,7 @@ npm i winston
 
 ### Decorators
 
-Copy everything inside the `src/decorators/` folder to your project
+Copy everything inside the `decorators/` folder to your project
 
 | name        | description      |
 | ----------- | ---------------- |
@@ -157,3 +158,36 @@ class FruitManager {
 | name       | description                                          |
 | ---------- | ---------------------------------------------------- |
 | `NO_COLOR` | When true, disables the color (default: `undefined`) |
+
+## Development
+
+```bash
+npm run dev
+```
+
+## Publishing
+
+```bash
+npm run pack
+```
+
+**Please see the following fields in `package.json`**
+
+- `main`
+- `files`
+- `scripts.pack`
+
+It will **build** and **pack** the following structure:
+
+```
+.
+├─  decorators/
+├─  index.d.ts
+├─  index.js
+├─  package.json
+└─  README.md
+```
+
+The output will be the `class-logger-x.x.x.tgz` where **x** refers to version numbers.
+
+This is how the consumers would see it when they do `npm i class-logger` on their project.
