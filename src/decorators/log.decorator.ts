@@ -1,7 +1,8 @@
 import winston from 'winston';
+import { LOGGER_METADATA } from './logger.decorator';
 
 type WithLogger = {
-  logger: winston.Logger;
+  [key: string]: winston.Logger;
 };
 
 type FormatData = {
@@ -13,6 +14,32 @@ type LogConfig = {
   format: (data: FormatData) => string;
 };
 
+/**
+ * #### Method decorator
+ *
+ * This will call the logger `.info()` each time your method is called.
+ * Note, that you must decorate your class with `Logger()` in order for this decorator to work.
+ *
+ * Usage:
+ *
+ * ```ts
+ * ;@Log()
+ * sampleMethod() {
+ *    // nothing here
+ * }
+ * ```
+ *
+ * Customizing the log format:
+ *
+ * ```ts
+ * ;@Log({
+ *   format: ({ method, args }) => `Executing ${method}(${args?.join(',')})`,
+ * })
+ * addItems(...fruits: string[]) {
+ *   ...
+ * }
+ * ```
+ */
 export function Log(config?: LogConfig): MethodDecorator {
   return (
     target: Object,
@@ -23,12 +50,13 @@ export function Log(config?: LogConfig): MethodDecorator {
     const isAwaiter = /__awaiter/.test(originalMethod.toString());
 
     const log = (
-      logger: winston.Logger,
       responseTime: number,
       options?: {
         args?: unknown[];
       },
     ) => {
+      const logger = (target as WithLogger)[LOGGER_METADATA.prop];
+
       const meta = {
         responseTime: `${responseTime}ms`,
       };
@@ -56,7 +84,7 @@ export function Log(config?: LogConfig): MethodDecorator {
         const endTime = Date.now();
         const responseTime = endTime - startTime;
 
-        log((this as WithLogger).logger, responseTime, { args });
+        log(responseTime, { args });
 
         return result;
       };
@@ -70,7 +98,7 @@ export function Log(config?: LogConfig): MethodDecorator {
         const endTime = Date.now();
         const responseTime = endTime - startTime;
 
-        log((this as WithLogger).logger, responseTime, { args });
+        log(responseTime, { args });
 
         return result;
       };

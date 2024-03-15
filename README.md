@@ -17,6 +17,7 @@ Implement ([winston][w]) logger via **Typescript Decorators**.
   - [Instantiate Class](#instantiate-class)
   - [Custom format](#custom-format)
   - [Reuse Logger](#reuse-logger)
+  - [Custon logger name](#custom-logger-name)
 - [Environment Variables](#environment-variables)
 - [Publishing](#publishing)
 
@@ -153,6 +154,27 @@ class FruitManager {
 {"timestamp":"2024-03-14T03:49:46.475Z","level":"debug","context":"FruitManager","message":"Sample message"}
 ```
 
+## Custom Logger name
+
+The default property that will be created for your class is `logger`.
+
+To customize:
+
+```ts
+@Logger({ level: 'debug', prop: 'log' })
+class FruitManager {
+  private log!: Logger; // reuse logger created by the @Logger({ prop: 'log' }) decorator
+
+  constructor() {
+    this.log.error('Sample message');
+    this.log.warn('Sample message');
+    this.log.info('Sample message');
+    this.log.verbose('Sample message');
+    this.log.debug('Sample message');
+  }
+}
+```
+
 ## Environment Variables
 
 | name       | description                                          |
@@ -191,3 +213,7 @@ It will **build** and **pack** the following structure:
 The output will be the `class-logger-x.x.x.tgz` where **x** refers to version numbers.
 
 This is how the consumers would see it when they do `npm i class-logger` on their project.
+
+```ts
+import { Logger, Log } from 'class-logger';
+```

@@ -3,8 +3,46 @@ import winston, { LoggerOptions, format } from 'winston';
 
 export type Logger = winston.Logger;
 
-export function Logger(config?: LoggerOptions): ClassDecorator {
+type LoggerProp = {
+  /**
+   * The property name of the logger that will be created for your Class
+   * @default 'logger'
+   */
+  prop?: string;
+};
+
+export const LOGGER_METADATA = {
+  prop: 'logger',
+};
+
+/**
+ * #### Class decorator
+ *
+ * This will instantiate a `winston.Logger` for your Class
+ * while giving the class name as the meta context for the logger.
+ * You can reuse the logger which is accessible via `this.logger` by default.
+ *
+ * To change this name, you can specify like so:
+ *
+ * ```ts
+ * ;@Logger({ prop: 'myLogger' })
+ *  class Sample {
+ *    private myLogger!: Logger
+ *
+ *    constructor() {
+ *      this.myLogger.info('I log you!')
+ *    }
+ *  }
+ * ```
+ *
+ */
+export function Logger(config?: LoggerOptions & LoggerProp): ClassDecorator {
   const { combine, timestamp, printf } = format;
+
+  const prop = config?.prop ?? 'logger';
+  delete config?.prop;
+
+  LOGGER_METADATA.prop = prop;
 
   return (target: Function) => {
     const mergedConfig: LoggerOptions = {
@@ -53,6 +91,6 @@ export function Logger(config?: LoggerOptions): ClassDecorator {
       ...config, // merge optional config
     };
 
-    target.prototype.logger = winston.createLogger(mergedConfig);
+    target.prototype[prop] = winston.createLogger(mergedConfig);
   };
 }

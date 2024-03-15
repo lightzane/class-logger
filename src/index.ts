@@ -1,6 +1,1 @@
-import { Log, Logger } from './decorators';
-
-export default {
-  Logger,
-  Log,
-};
+export { Logger, Log } from './decorators';
